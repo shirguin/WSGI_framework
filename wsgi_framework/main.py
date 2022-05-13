@@ -1,3 +1,6 @@
+from wsgi_framework.templator import render
+
+
 class Framework:
     def __init__(self, routes_obj_ls, fronts_obj_ls):
         self.lsRoutes = routes_obj_ls
@@ -9,7 +12,7 @@ class Framework:
 
         # Проверка на наличие закрывающего слеша
         if not path.endswith('/'):
-            path = path + '/'
+            path += '/'
 
         # отработка паттерна Page Controller
         if path in self.lsRoutes:
@@ -30,5 +33,5 @@ class Framework:
 
 class PageNotFound404:
     def __call__(self, request):
-        return '404 WHAT', '404 Page Not Found'
+        return '404 WHAT', render('404.html')
 

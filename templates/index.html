@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>{{title}}</title>
+  <title>{{context.title}}</title>
   <style type="text/css">
     html {
       height: 100%;
@@ -466,7 +466,9 @@
         </form>
       </div>
       <div id="content">
-        Текущая дата: {{date}}
+
+        <p style="color: red; font-weight: bold;">Текущая дата: {{ context.request['date'] }}</p>
+
         <h1>Welcome to the night_sky_2 template</h1>
         <p>This standards compliant, simple, fixed width website template is released as an 'open source' design (under
           a <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 Licence</a>), which
