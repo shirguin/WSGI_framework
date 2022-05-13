@@ -3,7 +3,6 @@ from views import Index, Contact, AnotherPage, Examples, Page
 
 
 # Front Controller
-# Исправить на текущий год
 def secret_front(request):
     request['date'] = date.today()
 
@@ -12,7 +11,11 @@ def other_front(request):
     request['key'] = 'key'
 
 
-fronts = [secret_front, other_front]
+def csslink(request):
+    request['csslink'] = '/static/style.css'
+
+
+fronts = [secret_front, other_front, csslink]
 
 routes = {
     '/': Index(),
