@@ -3,7 +3,7 @@ from views import Index, Contact, AnotherPage, Examples, Page
 
 
 # Front Controller
-def secret_front(request):
+def current_date(request):
     request['date'] = date.today()
 
 
@@ -11,11 +11,7 @@ def other_front(request):
     request['key'] = 'key'
 
 
-def csslink(request):
-    request['csslink'] = '/static/style.css'
-
-
-fronts = [secret_front, other_front, csslink]
+fronts = [current_date, other_front]
 
 routes = {
     '/': Index(),
