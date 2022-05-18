@@ -1,5 +1,8 @@
 {% extends "base.html" %}
+
 {% block content %}
+{% include "inc_menu.html" %}
+
 <div id="site_content">
       <div class="sidebar">
         <h1>Latest News</h1>
@@ -26,6 +29,7 @@
       <div id="content">
 
         <p style="color: red; font-weight: bold;">Текущая дата: {{ context.request['date'] }}</p>
+        {{ context }}
 
         <h1>Welcome to the night_sky_2 template</h1>
         <p>This standards compliant, simple, fixed width website template is released as an 'open source' design (under
