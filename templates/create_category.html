@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "inc_menu.html" %}
+
+<div id="site_content" style="height: 500px">
+    <h1>Создание категории</h1>
+    <form method="post">
+        <input type="text" name="name_category" placeholder="Название">
+        <button type="submit">Сохранить и вернуться на главную</button>
+    </form>
+</div>
+{% endblock %}
