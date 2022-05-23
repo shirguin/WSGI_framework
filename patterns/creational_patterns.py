@@ -4,17 +4,25 @@ from quopri import decodestring
 
 # Клас абстрактного пользователя
 class User:
-    pass
+    def __init__(self, surname, name, patronymic, age):
+        self.surname = surname
+        self.name = name
+        self.patronymic = patronymic
+        self.age = age
 
 
 # Класс преподователя
 class Teacher(User):
-    pass
+    def __init__(self, surname, name, patronymic, age):
+        self.type_user = 'teacher'
+        super().__init__(surname, name, patronymic, age)
 
 
 # Класс студента
 class Student(User):
-    pass
+    def __init__(self, surname, name, patronymic, age):
+        self.type_user = 'student'
+        super().__init__(surname, name, patronymic, age)
 
 
 # Класс создания пользователей
@@ -26,8 +34,8 @@ class UserFactory:
 
     # Создаем пользователя (Фабричный метод)
     @classmethod
-    def create(cls, type_user):
-        return cls.types_users[type_user]()
+    def create(cls, surname, name, patronymic, age, type_user):
+        return cls.types_users[type_user](surname, name, patronymic, age)
 
 
 # Порождающий паттерн Прототип (прототив курсов обучения)
@@ -70,11 +78,10 @@ class CourseFactory:
 class Category:
     auto_id = 0
 
-    def __init__(self, name, category):
+    def __init__(self, name_category):
         self.id = Category.auto_id
         Category.auto_id += 1
-        self.name = name
-        self.category = category
+        self.category = name_category
         self.courses = []
 
     def course_count(self):
@@ -83,18 +90,54 @@ class Category:
             result += self.category.curse_count()
         return result
 
-# Проверка работы класов
-# st = UserFactory.create('student')
-# print(type(st), st)
-# th = UserFactory.create('teacher')
-# print(type(th), th)
 
-cat_1 = Category('Программирование', None)
-print(type(cat_1), cat_1)
-print(cat_1.id, cat_1.name)
-cat_2 = Category('Анализ данных', None)
-print(type(cat_2), cat_2)
-print(cat_2.id, cat_2.name)
+# Основной интерфейс проекта
+class Engine:
+    def __init__(self):
+        self.students = []
+        self.teachers = []
+        self.courses = []
+        self.categories = []
 
-# course_1 = CourseFactory.create('interactive', 'Python', 'Программирование')
-# print(type(course_1), course_1)
+    @staticmethod
+    def create_user(surname, name, patronymic, age, type_user):
+        user = UserFactory.create(surname, name, patronymic, age, type_user)
+        return user
+
+    @staticmethod
+    def create_category(name_category):
+        return Category(name_category)
+
+    def find_category_by_id(self, id):
+        for item in self.categories:
+            if item.id == id:
+                return item
+        raise Exception(f'Категории с id = {id} не существует')
+
+
+    @staticmethod
+    def decode_value(value):
+        value_b = bytes(value.replace('%', '=').replace("+", " "), 'utf-8')
+        value_decode_str = decodestring(value_b)
+        return value_decode_str.decode('utf-8')
+
+
+# Проверка работы Engine
+# site = Engine()
+#
+# st_1 = site.create_user('Иванов', 'Иван', 'Иванович', 22, 'student')
+# site.students.append(st_1)
+# st_2 = site.create_user('Петров', 'Петр', 'Петрович', 21, 'student')
+# site.students.append(st_2)
+# for st in site.students:
+#     print(st.surname, st.name, st.patronymic, st.age, st.type_user)
+#
+# th_1 = site.create_user('Семенов', 'Иван', 'Иванович', 22, 'teacher')
+# site.teachers.append(th_1)
+# th_2 = site.create_user('Кирилов', 'Петр', 'Петрович', 21, 'teacher')
+# site.teachers.append(th_2)
+# for th in site.teachers:
+#     print(th.surname, th.name, th.patronymic, th.age, th.type_user)
+
+# cat_1 = site.create_category('Программирование')
+# print(cat_1.id, cat_1.category, cat_1.courses)
