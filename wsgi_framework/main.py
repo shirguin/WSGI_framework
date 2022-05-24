@@ -21,7 +21,8 @@ class Framework:
         request = {}
         # Получаем все данные запроса
         method = environ['REQUEST_METHOD']
-        request[method] = method
+        request['method'] = method
+
         if method == 'GET':
             request_params = GetRequests().get_request_params(environ)
             request['request_params'] = Framework.decode_value(request_params)

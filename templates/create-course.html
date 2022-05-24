@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "inc_menu.html" %}
+
+<div id="site_content" style="height: 500px">
+    <div>
+        <a href="/courses-list/?id={{context.id}}">Список курсов</a>
+    </div>
+
+    <br>
+    <h1>Создание курса для категории "{{context.category}}"</h1>
+    <form method="post">
+        <input type="text" name="name_course" placeholder="Название">
+        <button type="submit">Сохранить и вернуться к списку курсов</button>
+    </form>
+</div>
+{% endblock %}

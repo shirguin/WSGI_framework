@@ -85,10 +85,7 @@ class Category:
         self.courses = []
 
     def course_count(self):
-        result = len(self.courses)
-        if self.category:
-            result += self.category.curse_count()
-        return result
+        return len(self.courses)
 
 
 # Основной интерфейс проекта
@@ -114,6 +111,15 @@ class Engine:
                 return item
         raise Exception(f'Категории с id = {id} не существует')
 
+    @staticmethod
+    def create_course(type_course, name, category):
+        return CourseFactory.create(type_course, name, category)
+
+    def get_course(self, name_course):
+        for item in self.courses:
+            if item.name == name_course:
+                return item
+        return None
 
     @staticmethod
     def decode_value(value):
@@ -122,22 +128,3 @@ class Engine:
         return value_decode_str.decode('utf-8')
 
 
-# Проверка работы Engine
-# site = Engine()
-#
-# st_1 = site.create_user('Иванов', 'Иван', 'Иванович', 22, 'student')
-# site.students.append(st_1)
-# st_2 = site.create_user('Петров', 'Петр', 'Петрович', 21, 'student')
-# site.students.append(st_2)
-# for st in site.students:
-#     print(st.surname, st.name, st.patronymic, st.age, st.type_user)
-#
-# th_1 = site.create_user('Семенов', 'Иван', 'Иванович', 22, 'teacher')
-# site.teachers.append(th_1)
-# th_2 = site.create_user('Кирилов', 'Петр', 'Петрович', 21, 'teacher')
-# site.teachers.append(th_2)
-# for th in site.teachers:
-#     print(th.surname, th.name, th.patronymic, th.age, th.type_user)
-
-# cat_1 = site.create_category('Программирование')
-# print(cat_1.id, cat_1.category, cat_1.courses)
