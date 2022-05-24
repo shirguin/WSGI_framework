@@ -14,7 +14,7 @@
         <h1>Список курсов для категории "{{context.category}}"</h1>
         {% for item in context.objects_list %}
         <li>
-            {{item.name}} <span><a href="/copy-course/?name_course={{item.name}}">скопировать</a></span>
+            {{item.name}} <span><a href="/copy-course/?name_course={{item.name}}" style="color: blue">скопировать</a></span>
         </li>
         {% endfor %}
     </div>

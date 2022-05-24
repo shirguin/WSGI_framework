@@ -2,7 +2,7 @@ from copy import deepcopy
 from quopri import decodestring
 
 
-# Клас абстрактного пользователя
+# Класс абстрактного пользователя
 class User:
     def __init__(self, surname, name, patronymic, age):
         self.surname = surname
@@ -95,6 +95,7 @@ class Engine:
         self.teachers = []
         self.courses = []
         self.categories = []
+        self.users = []
 
     @staticmethod
     def create_user(surname, name, patronymic, age, type_user):
@@ -128,3 +129,31 @@ class Engine:
         return value_decode_str.decode('utf-8')
 
 
+# Порождающий паттерн Синглтон
+class SingletonByName(type):
+
+    def __init__(cls, name, bases, attrs, **kwargs):
+        super().__init__(name, bases, attrs)
+        cls.__instance = {}
+
+    def __call__(cls, *args, **kwargs):
+        if args:
+            name = args[0]
+        if kwargs:
+            name = kwargs['name']
+
+        if name in cls.__instance:
+            return cls.__instance[name]
+        else:
+            cls.__instance[name] = super().__call__(*args, **kwargs)
+            return cls.__instance[name]
+
+
+class Logger(metaclass=SingletonByName):
+
+    def __init__(self, name):
+        self.name = name
+
+    @staticmethod
+    def log(text):
+        print('log--->', text)
