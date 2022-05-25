@@ -1,11 +1,16 @@
 from patterns.creational_patterns import Engine, Logger
+from patterns.structural_patterns import AppRoute, Debug
 from wsgi_framework.templator import render
+
 
 site = Engine()
 logger = Logger('main')
+routes = {}
 
 
+@AppRoute(routes=routes, url='/')
 class Index:
+    @Debug(name='Index')
     def __call__(self, request):
         logger.log('Категории')
         context = {
@@ -16,7 +21,9 @@ class Index:
         return '200 OK', render('index.html', context=context, encoding='utf-8')
 
 
+@AppRoute(routes=routes, url='/contact/')
 class Contact:
+    @Debug(name='Contact')
     def __call__(self, request):
         logger.log('Контакты')
         context = {
@@ -26,7 +33,9 @@ class Contact:
         return '200 OK', render('contact.html', context=context, encoding='utf-8')
 
 
+@AppRoute(routes=routes, url='/another_page/')
 class AnotherPage:
+    @Debug(name='AnotherPage')
     def __call__(self, request):
         logger.log('Другая страница')
         context = {
@@ -36,7 +45,9 @@ class AnotherPage:
         return '200 OK', render('another_page.html', context=context, encoding='utf-8')
 
 
+@AppRoute(routes=routes, url='/users/')
 class Users:
+    @Debug(name='Users')
     def __call__(self, request):
         logger.log('Пользователи')
         context = {
@@ -47,7 +58,9 @@ class Users:
         return '200 OK', render('users.html', context=context, encoding='utf-8')
 
 
+@AppRoute(routes=routes, url='/page/')
 class Page:
+    @Debug(name='Page')
     def __call__(self, request):
         logger.log('Страница')
         context = {
@@ -58,7 +71,9 @@ class Page:
 
 
 # Создать категорию
+@AppRoute(routes=routes, url='/create-category/')
 class CreateCategory:
+    @Debug(name='CreateCategory')
     def __call__(self, request):
         logger.log('Создание категории')
 
@@ -92,7 +107,9 @@ class CreateCategory:
 
 
 # Список курсов
+@AppRoute(routes=routes, url='/courses-list/')
 class CoursesList:
+    @Debug(name='CoursesList')
     def __call__(self, request):
         logger.log('Список курсов')
         try:
@@ -110,7 +127,9 @@ class CoursesList:
 
 
 # Создать курс
+@AppRoute(routes=routes, url='/create-course/')
 class CreateCourse:
+    @Debug(name='CreateCourse')
     def __call__(self, request):
         logger.log('Создание курса')
 
@@ -147,7 +166,9 @@ class CreateCourse:
 
 
 # Копирование курса
+@AppRoute(routes=routes, url='/copy-course/')
 class CopyCourse:
+    @Debug(name='CopyCourse')
     def __call__(self, request):
         logger.log('Копирование курса')
         request_params = request['request_params']
@@ -178,7 +199,9 @@ class CopyCourse:
 
 
 # Создание пользователя
+@AppRoute(routes=routes, url='/create_user/')
 class CreateUser:
+    @Debug(name='CreateUser')
     def __call__(self, request):
         logger.log('Создание пользователя')
         if request['method'] == 'POST':
