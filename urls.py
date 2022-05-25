@@ -14,15 +14,16 @@ def other_front(request):
 
 fronts = [current_date, other_front]
 
-routes = {
-    '/': Index(),
-    '/contact/': Contact(),
-    '/another_page/': AnotherPage(),
-    '/users/': Users(),
-    '/page/': Page(),
-    '/create-category/': CreateCategory(),
-    '/courses-list/': CoursesList(),
-    '/create-course/': CreateCourse(),
-    '/copy-course/': CopyCourse(),
-    '/create_user/': CreateUser()
-}
+# Перенес в views с применением декоратора для контроллеров
+# routes = {
+#     '/': Index(),
+#     '/contact/': Contact(),
+#     '/another_page/': AnotherPage(),
+#     '/users/': Users(),
+#     '/page/': Page(),
+#     '/create-category/': CreateCategory(),
+#     '/courses-list/': CoursesList(),
+#     '/create-course/': CreateCourse(),
+#     '/copy-course/': CopyCourse(),
+#     '/create_user/': CreateUser()
+# }
