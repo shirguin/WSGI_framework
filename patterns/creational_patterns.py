@@ -108,7 +108,7 @@ class Engine:
         self.teachers = []
         self.courses = []
         self.categories = []
-        self.users = []
+        # self.users = []
 
     @staticmethod
     def create_user(surname, name, patronymic, age, type_user):

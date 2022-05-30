@@ -5,13 +5,13 @@
 
 <div id="site_content" style="height: 500px">
   <div>
-		<a href="/create_user/">Зарегистрировать нового студента</a>
+		<a href="/create_student/">Зарегистрировать нового студента</a>
   </div>
   <div>
 		<h1>Список зарегистрированных студентов</h1>
         {% for item in context.objects_list %}
             <li>
-                {{ item.surname }} {{ item.name }} {{ item.patronymic }} {{ item.age }} {{ item.type_user }}
+                {{ item.surname }} {{ item.name }} {{ item.patronymic }} {{ item.age }}
             </li>
 
         {% endfor %}
