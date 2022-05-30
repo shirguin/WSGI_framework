@@ -3,6 +3,9 @@ from quopri import decodestring
 
 
 # Класс абстрактного пользователя
+from patterns.behavioral_patterns import Subject
+
+
 class User:
     def __init__(self, surname, name, patronymic, age):
         self.surname = surname
@@ -44,11 +47,21 @@ class CoursePrototype:
         return deepcopy(self)
 
 
-class Course(CoursePrototype):
+class Course(CoursePrototype, Subject):
     def __init__(self, name, category):
         self.name = name
         self.category = category
         self.category.courses.append(self)
+        self.students = []
+        super().__init__()
+
+    def __getitem__(self, item):
+        return self.students[item]
+
+    def add_student(self, student: Student):
+        self.students.append(student)
+        student.courses.append(self)
+        self.notify()
 
 
 # Клас интерактивного курса

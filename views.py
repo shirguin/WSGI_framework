@@ -1,3 +1,4 @@
+from patterns.behavioral_patterns import ListView
 from patterns.creational_patterns import Engine, Logger
 from patterns.structural_patterns import AppRoute, Debug
 from wsgi_framework.templator import render
@@ -45,17 +46,17 @@ class AnotherPage:
         return '200 OK', render('another_page.html', context=context, encoding='utf-8')
 
 
-@AppRoute(routes=routes, url='/users/')
-class Users:
-    @Debug(name='Users')
-    def __call__(self, request):
-        logger.log('Пользователи')
-        context = {
-            'title': 'Пользователи',
-            'request': request,
-            'objects_list': site.users,
-        }
-        return '200 OK', render('users.html', context=context, encoding='utf-8')
+# @AppRoute(routes=routes, url='/students/')
+# class Students:
+#     @Debug(name='Users')
+#     def __call__(self, request):
+#         logger.log('Студенты')
+#         context = {
+#             'title': 'Студенты',
+#             'request': request,
+#             'objects_list': site.users
+#         }
+#         return '200 OK', render('students.html', context=context, encoding='utf-8')
 
 
 @AppRoute(routes=routes, url='/page/')
@@ -234,7 +235,7 @@ class CreateUser:
                 'request': request,
                 'objects_list': site.users,
             }
-            return '200 OK', render('users.html', context=context)
+            return '200 OK', render('students.html', context=context)
         else:
             context = {
                 'title': 'Регистрация пользователя',
@@ -242,3 +243,12 @@ class CreateUser:
                 'objects_list': site.users,
             }
             return '200 OK', render('create_user.html', context=context)
+
+
+@AppRoute(routes=routes, url='/students/')
+class StudentListView(ListView):
+    queryset = {
+        'objects_list': site.students,
+        'title': 'Студенты'
+    }
+    template_name = 'students.html'
