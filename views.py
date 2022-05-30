@@ -1,4 +1,4 @@
-from patterns.behavioral_patterns import ListView
+from patterns.behavioral_patterns import ListView, CreateView
 from patterns.creational_patterns import Engine, Logger
 from patterns.structural_patterns import AppRoute, Debug
 from wsgi_framework.templator import render
@@ -199,52 +199,6 @@ class CopyCourse:
             return '200 Ok', 'Курсы еще не добавлены'
 
 
-# Создание пользователя
-@AppRoute(routes=routes, url='/create_user/')
-class CreateUser:
-    @Debug(name='CreateUser')
-    def __call__(self, request):
-        logger.log('Создание пользователя')
-        if request['method'] == 'POST':
-            data = request['data']
-
-            surname = data['surname']
-            surname = site.decode_value(surname)
-
-            name = data['name']
-            name = site.decode_value(name)
-
-            patronymic = data['patronymic']
-            patronymic = site.decode_value(patronymic)
-
-            age = data['age']
-            age = site.decode_value(age)
-
-            type_user = data['type_user']
-            type_user = site.decode_value(type_user)
-
-            new_user = site.create_user(surname, name, patronymic, age, type_user)
-            site.users.append(new_user)
-            if type_user == 'student':
-                site.students.append(new_user)
-            else:
-                site.teachers.append(new_user)
-
-            context = {
-                'title': 'Пользователи',
-                'request': request,
-                'objects_list': site.users,
-            }
-            return '200 OK', render('students.html', context=context)
-        else:
-            context = {
-                'title': 'Регистрация пользователя',
-                'request': request,
-                'objects_list': site.users,
-            }
-            return '200 OK', render('create_user.html', context=context)
-
-
 @AppRoute(routes=routes, url='/students/')
 class StudentListView(ListView):
     queryset = {
@@ -252,3 +206,28 @@ class StudentListView(ListView):
         'title': 'Студенты'
     }
     template_name = 'students.html'
+
+
+@AppRoute(routes=routes, url='/create_student/')
+class StudentCreateView(CreateView):
+    queryset = {
+        'title': 'Регистрация студента'
+    }
+    template_name = 'create_student.html'
+
+    def create_obj(self, data: dict):
+        surname = data['surname']
+        surname = site.decode_value(surname)
+
+        name = data['name']
+        name = site.decode_value(name)
+
+        patronymic = data['patronymic']
+        patronymic = site.decode_value(patronymic)
+
+        age = data['age']
+        age = site.decode_value(age)
+
+        new_obj = site.create_user(surname, name, patronymic, age, 'student')
+        site.students.append(new_obj)
+
