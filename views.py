@@ -1,4 +1,4 @@
-from patterns.behavioral_patterns import ListView, CreateView
+from patterns.behavioral_patterns import ListView, CreateView, BaseSerializer, EmailNotifier, SmsNotifier
 from patterns.creational_patterns import Engine, Logger
 from patterns.structural_patterns import AppRoute, Debug
 from wsgi_framework.templator import render
@@ -6,6 +6,9 @@ from wsgi_framework.templator import render
 
 site = Engine()
 logger = Logger('main')
+email_notifier = EmailNotifier()
+sms_notifier = SmsNotifier()
+
 routes = {}
 
 
@@ -44,19 +47,6 @@ class AnotherPage:
             'request': request
         }
         return '200 OK', render('another_page.html', context=context, encoding='utf-8')
-
-
-# @AppRoute(routes=routes, url='/students/')
-# class Students:
-#     @Debug(name='Users')
-#     def __call__(self, request):
-#         logger.log('Студенты')
-#         context = {
-#             'title': 'Студенты',
-#             'request': request,
-#             'objects_list': site.users
-#         }
-#         return '200 OK', render('students.html', context=context, encoding='utf-8')
 
 
 @AppRoute(routes=routes, url='/page/')
@@ -142,6 +132,10 @@ class CreateCourse:
             category = site.find_category_by_id(int(self.category_id))
 
             course = site.create_course('interactive', name_course, category)
+
+            course.observers.append(email_notifier)
+            course.observers.append(sms_notifier)
+
             site.courses.append(course)
             context = {
                 'title': 'Список курсов',
@@ -231,3 +225,33 @@ class StudentCreateView(CreateView):
         new_obj = site.create_user(surname, name, patronymic, age, 'student')
         site.students.append(new_obj)
 
+
+@AppRoute(routes=routes, url='/add_student/')
+class AddStudentByCourseCreateView(CreateView):
+    queryset = {
+        'title': 'Добавление студента на курс'
+    }
+    template_name = 'add_student.html'
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['courses'] = site.courses
+        context['students'] = site.students
+        return context
+
+    def create_obj(self, data: dict):
+        course_name = data['course_name']
+        course_name = site.decode_value(course_name)
+        course = site.get_course(course_name)
+
+        student_surname = data['student_surname']
+        student_surname = site.decode_value(student_surname)
+        student = site.get_student(student_surname)
+        course.add_student(student)
+
+
+@AppRoute(routes=routes, url='/api/')
+class CourseApi:
+    @Debug(name='CourseApi')
+    def __call__(self, request):
+        return '200 OK', BaseSerializer(site.courses).save()
