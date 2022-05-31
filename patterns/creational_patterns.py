@@ -1,9 +1,8 @@
 from copy import deepcopy
 from quopri import decodestring
-
+from patterns.behavioral_patterns import Subject, FileWriter
 
 # Класс абстрактного пользователя
-from patterns.behavioral_patterns import Subject
 
 
 class User:
@@ -170,9 +169,10 @@ class SingletonByName(type):
 
 class Logger(metaclass=SingletonByName):
 
-    def __init__(self, name):
+    def __init__(self, name, writer=FileWriter()):
         self.name = name
+        self.writer = writer
 
-    @staticmethod
-    def log(text):
-        print('log--->', text)
+    def log(self, text):
+        text = f'log---> {text}'
+        self.writer.write(text)
