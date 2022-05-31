@@ -1,11 +1,12 @@
-from patterns.behavioral_patterns import ListView, CreateView, BaseSerializer, EmailNotifier, SmsNotifier
+from patterns.behavioral_patterns import ListView, CreateView, BaseSerializer, EmailNotifier, SmsNotifier, FileWriter
 from patterns.creational_patterns import Engine, Logger
 from patterns.structural_patterns import AppRoute, Debug
 from wsgi_framework.templator import render
 
 
 site = Engine()
-logger = Logger('main')
+writer = FileWriter()
+logger = Logger('main', writer)
 email_notifier = EmailNotifier()
 sms_notifier = SmsNotifier()
 

@@ -1,7 +1,6 @@
 from datetime import date
 
 
-
 # Front Controller
 def current_date(request):
     request['date'] = date.today()
