@@ -5,13 +5,19 @@
 
 <div id="site_content" style="height: 500px">
   <div>
-		<a href="/create_student/">Зарегистрировать нового студента</a>
+		<a href="/create_student/">Зарегистрировать нового студента</a><br>
+        <a href="/add_student/">Добавить студента на курс</a>
   </div>
   <div>
 		<h1>Список зарегистрированных студентов</h1>
         {% for item in context.objects_list %}
             <li>
                 {{ item.surname }} {{ item.name }} {{ item.patronymic }} {{ item.age }}
+                <span style="color:orange">
+                    {% for course in item.courses %}
+                        {{ course.name }}
+                    {% endfor %}
+                </span>
             </li>
 
         {% endfor %}

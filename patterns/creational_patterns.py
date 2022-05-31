@@ -25,6 +25,7 @@ class Teacher(User):
 class Student(User):
     def __init__(self, surname, name, patronymic, age):
         self.type_user = 'student'
+        self.courses = []
         super().__init__(surname, name, patronymic, age)
 
 
@@ -134,6 +135,11 @@ class Engine:
             if item.name == name_course:
                 return item
         return None
+
+    def get_student(self, surname) -> Student:
+        for item in self.students:
+            if item.surname == surname:
+                return item
 
     @staticmethod
     def decode_value(value):
