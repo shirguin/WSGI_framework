@@ -1,5 +1,8 @@
 from copy import deepcopy
 from quopri import decodestring
+from sqlite3 import connect
+
+from patterns.architectural_system_pattern_unit_of_work import DomainObject
 from patterns.behavioral_patterns import Subject, FileWriter
 
 # Класс абстрактного пользователя
@@ -21,7 +24,7 @@ class Teacher(User):
 
 
 # Класс студента
-class Student(User):
+class Student(User, DomainObject):
     def __init__(self, surname, name, patronymic, age):
         self.type_user = 'student'
         self.courses = []
@@ -176,3 +179,83 @@ class Logger(metaclass=SingletonByName):
     def log(self, text):
         text = f'log---> {text}'
         self.writer.write(text)
+
+
+class StudentMapper:
+
+    def __init__(self, connection):
+        self.connection = connection
+        self.cursor = connection.cursor()
+        self.table_name = 'student'
+
+    def all(self):
+        statement = f'SELECT * from {self.table_name}'
+        self.cursor.execute(statement)
+        result = []
+        for item in self.cursor.fetchall():
+            id, name = item
+            student = Student(name)
+            student.id = id
+            result.append(student)
+        return result
+
+    def find_by_id(self, id):
+        statement = f'SELECT id, name FROM {self.table_name} WHERE id=?'
+        self.cursor.execute(statement, (id,))
+        result = self.cursor.fetchone()
+        if result:
+            return Student(*result)
+        else:
+            raise RecordNotFoundException(f'record with id={id} not found')
+
+    def insert(self, obj):
+        statement = f'INSERT INTO {self.table_name} (name) VALUES (?)'
+        self.cursor.execute(statement, (obj.name, ))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbCommitException(e.args)
+
+    def update(self, obj):
+        statement = f'UPDATE {self.table_name} SET name=? WHERE id=?'
+        self.cursor.execute(statement, (obj.name, obj.id))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbUpdateException(e.args)
+
+    def delete(self, obj):
+        statement = f"DELETE FROM {self.tablename} WHERE id=?"
+        self.cursor.execute(statement, (obj.id,))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbDeleteException(e.args)
+
+
+connection = connect('patterns.sqlite')
+
+
+class MapperRegistry:
+    pass
+'''Закончил здесь!!!!!'''
+
+
+class RecordNotFoundException(Exception):
+    def __init__(self, message):
+        super().__init__(f'Record not found: {message}')
+
+
+class DbCommitException(Exception):
+    def __init__(self, message):
+        super().__init__(f'Db commit error: {message}')
+
+
+class DbUpdateException(Exception):
+    def __init__(self, message):
+        super().__init__(f'Db update error: {message}')
+
+
+class DbDeleteException(Exception):
+    def __init__(self, message):
+        super().__init__(f'Db delete error: {message}')
