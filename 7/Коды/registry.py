@@ -36,4 +36,14 @@ class Dog(Animal):
     pass
 
 
+class Test(metaclass=RegistryHolder):
+    count = 0
+
+    def __init__(self):
+        Test.count += 1
+
+
 print(RegistryHolder.lst)
+print(RegistryHolder.count)
+a = Bear()
+print(Animal.count)
