@@ -193,8 +193,8 @@ class StudentMapper:
         self.cursor.execute(statement)
         result = []
         for item in self.cursor.fetchall():
-            id, name = item
-            student = Student(name)
+            id, surname, name, patronymic, age = item
+            student = Student(surname, name, patronymic, age)
             student.id = id
             result.append(student)
         return result
@@ -209,8 +209,10 @@ class StudentMapper:
             raise RecordNotFoundException(f'record with id={id} not found')
 
     def insert(self, obj):
-        statement = f'INSERT INTO {self.table_name} (name) VALUES (?)'
-        self.cursor.execute(statement, (obj.name, ))
+        # statement = f'INSERT INTO {self.table_name} (name) VALUES (?)'
+        # self.cursor.execute(statement, (obj.name, ))
+        statement = f'INSERT INTO {self.table_name} (surname, name, patronymic, age) VALUES (?, ?, ?, ?)'
+        self.cursor.execute(statement, (obj.surname, obj.name, obj.patronymic, obj.age, ))
         try:
             self.connection.commit()
         except Exception as e:
@@ -225,7 +227,7 @@ class StudentMapper:
             raise DbUpdateException(e.args)
 
     def delete(self, obj):
-        statement = f"DELETE FROM {self.tablename} WHERE id=?"
+        statement = f"DELETE FROM {self.table_name} WHERE id=?"
         self.cursor.execute(statement, (obj.id,))
         try:
             self.connection.commit()
@@ -235,10 +237,22 @@ class StudentMapper:
 
 connection = connect('patterns.sqlite')
 
+'''Архитектурный системный паттерн - Data Mapper'''
+
 
 class MapperRegistry:
-    pass
-'''Закончил здесь!!!!!'''
+    mappers = {
+        'student': StudentMapper,
+    }
+
+    @staticmethod
+    def get_mapper(obj):
+        if isinstance(obj, Student):
+            return StudentMapper(connection)
+
+    @staticmethod
+    def get_current_mapper(name):
+        return MapperRegistry.mappers[name](connection)
 
 
 class RecordNotFoundException(Exception):
