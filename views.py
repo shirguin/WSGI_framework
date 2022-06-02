@@ -1,5 +1,6 @@
+from patterns.architectural_system_pattern_unit_of_work import UnitOfWork
 from patterns.behavioral_patterns import ListView, CreateView, BaseSerializer, EmailNotifier, SmsNotifier, FileWriter
-from patterns.creational_patterns import Engine, Logger
+from patterns.creational_patterns import Engine, Logger, MapperRegistry
 from patterns.structural_patterns import AppRoute, Debug
 from wsgi_framework.templator import render
 
@@ -9,6 +10,9 @@ writer = FileWriter()
 logger = Logger('main', writer)
 email_notifier = EmailNotifier()
 sms_notifier = SmsNotifier()
+
+UnitOfWork.new_current()
+UnitOfWork.get_current().set_mapper_registry(MapperRegistry)
 
 routes = {}
 
@@ -196,11 +200,16 @@ class CopyCourse:
 
 @AppRoute(routes=routes, url='/students/')
 class StudentListView(ListView):
-    queryset = {
-        'objects_list': site.students,
-        'title': 'Студенты'
-    }
+
     template_name = 'students.html'
+
+    def get_queryset(self):
+        mapper = MapperRegistry.get_current_mapper('student')
+        queryset = {
+            'objects_list': mapper.all(),
+            'title': 'Студенты'
+        }
+        return queryset
 
 
 @AppRoute(routes=routes, url='/create_student/')
@@ -226,6 +235,9 @@ class StudentCreateView(CreateView):
         new_obj = site.create_user(surname, name, patronymic, age, 'student')
         site.students.append(new_obj)
 
+        new_obj.mark_new()
+        UnitOfWork.get_current().commit()
+
 
 @AppRoute(routes=routes, url='/add_student/')
 class AddStudentByCourseCreateView(CreateView):
@@ -237,6 +249,11 @@ class AddStudentByCourseCreateView(CreateView):
     def get_context_data(self):
         context = super().get_context_data()
         context['courses'] = site.courses
+
+        # Загружаем список студентов из БД
+        mapper = MapperRegistry.get_current_mapper('student')
+        site.students = mapper.all()
+
         context['students'] = site.students
         return context
 
