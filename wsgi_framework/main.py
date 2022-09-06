@@ -37,6 +37,12 @@ class Framework:
         # отработка паттерна Page Controller
         if path in self.lsRoutes:
             view = self.lsRoutes[path]
+            content_type = self.get_content_type(path)
+            code, body = view(request)
+            body = body.encode('utf-8')
+
+        elif path.startswith(self.settings.STATIC_URL):
+
         else:
             view = PageNotFound404()
 
